@@ -8,6 +8,7 @@ from chainchomp_cli.src.core.commands.chainlink_profile import chainlink_profile
 from chainchomp_cli.src.core.commands.chainlink_project import chainlink_project_command
 from chainchomp_cli.src.core.commands.chainlink_start import chainlink_start_command
 from chainchomp_cli.src.core.commands.chainlink_stop import chainlink_stop_command
+from chainchomp_cli.src.core.commands.chainchomp_setup import chainchomp_setup_command
 
 
 @click.group()
@@ -16,6 +17,7 @@ def chainchomp():
 
 
 def add_sub_commands():
+    chainchomp.add_command(chainchomp_setup_command.chainchomp_setup)
     chainchomp.add_command(chainlink_create_command.chainlink_create)
     chainchomp.add_command(chainlink_edit_command.chainlink_edit)
     chainchomp.add_command(chainlink_start_command.chainlink_start)
