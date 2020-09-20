@@ -2,6 +2,8 @@ import os
 import click
 from chainchomplib.configlayer.model.ChainlinkConfigModel import ChainlinkConfigModel
 from click import echo, style
+
+from chainchomp_cli.src.core.handlers.config_file.ConfigWriterHandler import ConfigWriterHandler
 from chainchomp_cli.src.core.handlers.projects.ProjectFileHandler import ProjectFileHandler
 from chainchomp_cli.src.core.handlers.projects.ProjectsFolderHandler import ProjectsFolderHandler
 from chainchomp_cli.src.core.handlers.setup.SetupHandler import SetupHandler
@@ -9,7 +11,11 @@ from chainchomp_cli.src.core.handlers.setup.SetupHandler import SetupHandler
 
 @click.command('chainlink:create')
 @click.argument('path', default=os.getcwd())
-def chainlink_create(path):
+@click.option('--force/--soft',
+              default=False,
+              help='Force overwriting of an existing chainfile'
+              )
+def chainlink_create(path, force):
     """
     parameters:
     path: Absolute path to where the config file should be created. Defaults to current working directory
@@ -55,6 +61,7 @@ def chainlink_create(path):
 
     more_information = click.confirm(style('Do you want to input further details?', fg='cyan'), default=False)
     if not more_information:
+        create_chainfile(chainlink_config_model, path, force)
         create_or_add_to_project(project_name, chainlink_name, user_wants_new_project)
         return
 
@@ -92,6 +99,7 @@ def chainlink_create(path):
         chainlink_config_model.mq_type = mq_type
 
     create_or_add_to_project(project_name, chainlink_name, user_wants_new_project)
+    create_chainfile(chainlink_config_model, path, force)
 
 
 def create_or_add_to_project(project_name: str, chainlink_name: str, new: bool):
@@ -100,3 +108,15 @@ def create_or_add_to_project(project_name: str, chainlink_name: str, new: bool):
         project_file_handler.create_new_project(project_name, [chainlink_name])
     else:
         project_file_handler.add_chainlink_to_project(chainlink_name, project_name)
+
+
+def create_chainfile(chainlink_config_model: ChainlinkConfigModel, path: str, force: bool):
+    echo(style('Now writing the chainlink file...', fg='cyan'))
+    file_created = ConfigWriterHandler.write_config_file(chainlink_config_model, path, force)
+    if file_created is None:
+        echo(style(f'Could not write chainfile because it already exists at: {path}', fg='yellow'))
+        echo(style('To overwrite an existing chainfile use the --force switch for this command', fg='yellow'))
+    if not file_created:
+        echo(style(f'Failed to write the chainlink file to: {path}', fg='red'))
+    else:
+        echo(style(f'Successfully wrote chainlink file to: {path}', fg='green'))

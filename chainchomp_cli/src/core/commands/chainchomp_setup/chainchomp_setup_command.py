@@ -12,7 +12,7 @@ from chainchomp_cli.src.core.handlers.setup.SetupHandler import SetupHandler
 
 @click.command('chainchomp:setup')
 def chainchomp_setup():
-    setup = click.confirm(style('Welcome to Chainchomp. Do you want to run the setup?', fg='cyan'), abort=True)
+    click.confirm(style('Welcome to Chainchomp. Do you want to run the setup?', fg='cyan'), abort=True)
 
     with click.progressbar(
             length=len(inspect.getmembers(PathProvider, inspect.ismethod)),
