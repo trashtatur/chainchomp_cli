@@ -3,7 +3,10 @@ import os
 import click
 from chainchomplib.configlayer.resolver.ChainfileResolver import ChainfileResolver
 
+from chainchomp_cli.src.core.handlers.setup.SetupHandler import SetupHandler
 
+
+@SetupHandler.is_setup
 @click.command('chainlink:start')
 @click.argument('chainfile', default=os.path.join(os.getcwd(), 'chainfile.yml'))
 def chainlink_start(chainfile):

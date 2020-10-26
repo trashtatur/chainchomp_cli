@@ -3,8 +3,6 @@ from typing import List
 
 from chainchomplib.data import PathProvider
 
-from chainchomp_cli.src.core.handlers.setup.SetupHandler import SetupHandler
-
 
 class ProfilesFolderHandler:
 

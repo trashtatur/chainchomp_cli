@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from chainchomplib.data import PathProvider
 
@@ -6,7 +7,7 @@ from chainchomplib.data import PathProvider
 class AdapterFolderHandler:
 
     @staticmethod
-    def provide_list_of_installed_adapters():
+    def provide_list_of_installed_adapters() -> List[str]:
         path_to_adapters_folder = PathProvider.installed_adapters_folder()
         if not path_to_adapters_folder.is_dir():
             return []
