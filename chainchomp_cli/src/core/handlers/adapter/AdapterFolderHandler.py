@@ -27,3 +27,4 @@ class AdapterFolderHandler:
             print('Failed to create installed adapters dir')
 
         return True
+

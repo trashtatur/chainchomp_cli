@@ -1,0 +1,10 @@
+project: 'test project'
+chainlink:
+  name: 'test name'
+  next: 'test next'
+  previous: 'test previous'
+masterLink: true
+start: 'test start'
+stop: 'test stop'
+adapter: 'test adapter'
+profile: 'test profile'

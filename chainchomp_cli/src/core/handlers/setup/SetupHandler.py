@@ -1,4 +1,5 @@
 import os
+from collections import Callable
 
 import click
 from chainchomplib.data import PathProvider
@@ -10,7 +11,7 @@ from chainchomp_cli.src.MessageColorEnum import MessageColorEnum
 class SetupHandler:
 
     @staticmethod
-    def is_setup(func) -> bool:
+    def is_setup(func: Callable) -> Callable:
         is_setup = PathProvider.base_config_folder().is_dir() \
                and PathProvider.projects_folder().is_dir() \
                and PathProvider.env_var_folder().is_dir() \
@@ -30,7 +31,6 @@ class SetupHandler:
     def create_base_folder():
         if PathProvider.base_config_folder().is_dir():
             return False
-
         try:
             os.mkdir(PathProvider.base_config_folder())
         except OSError:
