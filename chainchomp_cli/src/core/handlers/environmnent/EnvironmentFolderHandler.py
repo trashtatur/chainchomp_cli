@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+from chainchomplib import LoggerInterface
 from chainchomplib.data import PathProvider
 
 
@@ -21,8 +22,7 @@ class EnvironmentFolderHandler:
 
         try:
             os.mkdir(PathProvider.env_var_folder())
-        except OSError:
-            # TODO Proper exception
-            print('Failed to create environments dir')
+        except OSError as exception:
+            LoggerInterface.error(f'Failed to create environments dir with exception: {exception}')
 
         return True

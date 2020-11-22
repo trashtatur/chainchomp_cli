@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+from chainchomplib import LoggerInterface
 from chainchomplib.data import PathProvider
 
 
@@ -22,9 +23,8 @@ class AdapterFolderHandler:
 
         try:
             os.mkdir(PathProvider.installed_adapters_folder())
-        except OSError:
-            # TODO Proper exception
-            print('Failed to create installed adapters dir')
+        except OSError as exception:
+            LoggerInterface.error(f'Failed to create installed adapters directory with exception: {exception}')
 
         return True
 

@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+from chainchomplib import LoggerInterface
 from chainchomplib.data import PathProvider
 
 
@@ -21,8 +22,6 @@ class ProfilesFolderHandler:
 
         try:
             os.mkdir(PathProvider.profiles_folder())
-        except OSError:
-            # TODO Proper exception
-            print('Failed to create profiles dir')
-
+        except OSError as exception:
+            LoggerInterface.error(f'Failed to create profiles directory with exception: {exception}')
         return True

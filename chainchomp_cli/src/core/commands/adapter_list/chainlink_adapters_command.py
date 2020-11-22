@@ -1,9 +1,12 @@
 import click
 from click import style, echo
 
+from chainchomp_cli.src.cli import MessageColors
 from chainchomp_cli.src.core.handlers.adapter.AdapterFolderHandler import AdapterFolderHandler
+from chainchomp_cli.src.core.handlers.setup.SetupHandler import SetupHandler
 
 
+@SetupHandler.is_setup
 @click.command('adapter:list')
 def adapter_list():
     """
@@ -11,5 +14,5 @@ def adapter_list():
     to be installed for chainchomp
     """
     list_of_installed_adapters = AdapterFolderHandler.provide_list_of_installed_adapters()
-    echo(style('Installed Adapters: \n', fg='cyan'))
+    echo(style('Installed Adapters: \n', fg=MessageColors.INFO))
     echo(style('\n'.join(map(str, list_of_installed_adapters)), fg='cyan'))

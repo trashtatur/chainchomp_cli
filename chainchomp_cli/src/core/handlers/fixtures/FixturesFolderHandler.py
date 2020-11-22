@@ -1,5 +1,6 @@
 import os
 
+from chainchomplib import LoggerInterface
 from chainchomplib.data import PathProvider
 
 
@@ -15,8 +16,6 @@ class FixturesFolderHandler:
 
         try:
             os.mkdir(PathProvider.fixtures_folder())
-        except OSError:
-            # TODO Proper exception
-            print('Failed to create fixtures dir')
-
+        except OSError as exception:
+            LoggerInterface.error(f'Failed to create fixtures dir with exception: {exception}')
         return True

@@ -1,9 +1,9 @@
 import os
 import click
-from chainchomplib.configlayer.model.ChainlinkConfigModel import ChainlinkConfigModel
+from chainchomplib.configlayer.model.ChainfileModel import ChainfileModel
 from click import echo, style
 
-from chainchomp_cli.src.MessageColorEnum import MessageColorEnum
+from chainchomp_cli.src.cli import MessageColors
 from chainchomp_cli.src.core.handlers.adapter.AdapterFolderHandler import AdapterFolderHandler
 from chainchomp_cli.src.core.handlers.config_file.ConfigWriterHandler import ConfigWriterHandler
 from chainchomp_cli.src.core.handlers.projects.ProjectFileHandler import ProjectFileHandler
@@ -36,8 +36,8 @@ def chainlink_create(path: str, force: bool):
     :return:
     """
 
-    echo(style('Welcome to Chainchomp. We can see that you want to add a new chainlink', fg=MessageColorEnum.INFO))
-    echo(style('What is the project that this chainlink is assigned to', fg=MessageColorEnum.INFO))
+    echo(style('Welcome to Chainchomp. We can see that you want to add a new chainlink', fg=MessageColors.INFO))
+    echo(style('What is the project that this chainlink is assigned to', fg=MessageColors.INFO))
     projects_list = ProjectsFolderHandler.provide_list_of_projects()
     user_wants_new_project = False
     if projects_list is not []:
@@ -45,7 +45,7 @@ def chainlink_create(path: str, force: bool):
         counter = 1
         for project in projects_list:
             output_string += f'{counter}) {project} \n'
-        echo(style('You can choose from already existing projects, or make a new one', fg=MessageColorEnum.INFO))
+        echo(style('You can choose from already existing projects, or make a new one', fg=MessageColors.INFO))
         project_name_index = click.prompt(output_string, default=0)
         if project_name_index == 0:
             user_wants_new_project = True
@@ -54,64 +54,64 @@ def chainlink_create(path: str, force: bool):
     if user_wants_new_project:
         project_name = click.prompt('Please type in the designated project name now')
 
-    echo(style('Now please provide a name for your chainlink', fg=MessageColorEnum.INFO))
-    chainlink_name = click.prompt(style('Please type in the designated name now', MessageColorEnum.PROMPT))
-    chainlink_config_model = ChainlinkConfigModel(project_name, chainlink_name)
+    echo(style('Now please provide a name for your chainlink', fg=MessageColors.INFO))
+    chainlink_name = click.prompt(style('Please type in the designated name now', MessageColors.PROMPT))
+    chainfile_model = ChainfileModel(project_name, chainlink_name)
 
-    more_information = click.confirm(style('Do you want to input further details?', fg=MessageColorEnum.PROMPT),
+    more_information = click.confirm(style('Do you want to input further details?', fg=MessageColors.PROMPT),
                                      default=False)
     if not more_information:
-        create_chainfile(chainlink_config_model, path, force)
+        create_chainfile(chainfile_model, path, force)
         create_or_add_to_project(project_name, chainlink_name, user_wants_new_project)
         return
 
     master_link = click.confirm(
-        style('Is this chainlink a Master link?', fg=MessageColorEnum.PROMPT),
-        default=chainlink_config_model.is_master_link
+        style('Is this chainlink a Master link?', fg=MessageColors.PROMPT),
+        default=chainfile_model.is_master_link
     )
 
-    chainlink_config_model.is_master_link = master_link
+    chainfile_model.is_master_link = master_link
 
     start_script = click.confirm(
-        style('Do you want to provide information about a start script', fg=MessageColorEnum.PROMPT),
+        style('Do you want to provide information about a start script', fg=MessageColors.PROMPT),
         default=False
     )
     if start_script:
         start_command = click.prompt(
-            style('Please provide a full command to execute your start script now', fg=MessageColorEnum.PROMPT),
-            default=chainlink_config_model.start
+            style('Please provide a full command to execute your start script now', fg=MessageColors.PROMPT),
+            default=chainfile_model.start
         )
-        chainlink_config_model.start = start_command
+        chainfile_model.start = start_command
 
     stop_script = click.confirm(
-        style('Do you want to provide information about a stop script', fg=MessageColorEnum.PROMPT),
+        style('Do you want to provide information about a stop script', fg=MessageColors.PROMPT),
         default=False
     )
     if stop_script:
         stop_command = click.prompt(
-            style('Please provide a full command to execute your stop script now', fg=MessageColorEnum.PROMPT),
-            default=chainlink_config_model.stop
+            style('Please provide a full command to execute your stop script now', fg=MessageColors.PROMPT),
+            default=chainfile_model.stop
         )
-        chainlink_config_model.stop = stop_command
+        chainfile_model.stop = stop_command
 
-    mq = click.confirm(
-        style('Do you want to provide information about the message queue type', fg=MessageColorEnum.PROMPT),
+    adapter = click.confirm(
+        style('Do you want to provide information about the adapter type', fg=MessageColors.PROMPT),
         default=False
     )
-    if mq:
+    if adapter:
         adapter_list = AdapterFolderHandler.provide_list_of_installed_adapters()
         counter = 1
         output_string = ''
         for adapter in adapter_list:
             output_string += f'{counter}) {adapter} \n'
-        mq_type = click.prompt(
-            style(f'Please choose one of the following by number \n {output_string}', fg=MessageColorEnum.PROMPT),
+        adapter_type = click.prompt(
+            style(f'Please choose one of the following by number \n {output_string}', fg=MessageColors.PROMPT),
             default=1
         )
-        chainlink_config_model.mq_type = mq_type
+        chainfile_model.adapter = adapter_type
 
     create_or_add_to_project(project_name, chainlink_name, user_wants_new_project)
-    create_chainfile(chainlink_config_model, path, force)
+    create_chainfile(chainfile_model, path, force)
 
 
 def create_or_add_to_project(project_name: str, chainlink_name: str, new: bool):
@@ -121,14 +121,14 @@ def create_or_add_to_project(project_name: str, chainlink_name: str, new: bool):
         ProjectFileHandler.add_chainlink_to_project(chainlink_name, project_name)
 
 
-def create_chainfile(chainlink_config_model: ChainlinkConfigModel, path: str, force: bool):
-    echo(style('Now writing the chainfile...', fg=MessageColorEnum.INFO))
+def create_chainfile(chainlink_config_model: ChainfileModel, path: str, force: bool):
+    echo(style('Now writing the chainfile...', fg=MessageColors.INFO))
     file_created = ConfigWriterHandler.write_config_file(chainlink_config_model, path, force)
     if file_created is None:
-        echo(style(f'Could not write chainfile because it already exists at: {path}', fg=MessageColorEnum.WARNING))
+        echo(style(f'Could not write chainfile because it already exists at: {path}', fg=MessageColors.WARNING))
         echo(style('To overwrite an existing chainfile use the --force switch for this command',
-                   fg=MessageColorEnum.WARNING))
+                   fg=MessageColors.WARNING))
     if not file_created:
-        echo(style(f'Failed to write the chainfile to: {path}', fg=MessageColorEnum.ERROR))
+        echo(style(f'Failed to write the chainfile to: {path}', fg=MessageColors.ERROR))
     else:
-        echo(style(f'Successfully wrote chainfile to: {path}', fg=MessageColorEnum.SUCCESS))
+        echo(style(f'Successfully wrote chainfile to: {path}', fg=MessageColors.SUCCESS))

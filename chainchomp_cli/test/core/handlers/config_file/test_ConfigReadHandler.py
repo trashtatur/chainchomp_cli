@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from chainchomplib.configlayer.model.ChainlinkConfigModel import ChainlinkConfigModel
+from chainchomplib.configlayer.model.ChainfileModel import ChainfileModel
 from chainchomplib.data import PathProvider
 from parameterized import parameterized
 
@@ -12,14 +12,13 @@ class ConfigReadHandlerTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.configPath = os.path.join(PathProvider.base_config_folder(), 'configFileReader')
-        self.chainlinkConfigModel = ChainlinkConfigModel(
+        self.ChainfileModel = ChainfileModel(
             'test project',
             'test name',
             'test next',
             'test previous',
             'test start',
             'test stop',
-            True,
             'test adapter',
             'test profile'
         )
@@ -40,11 +39,11 @@ class ConfigReadHandlerTest(unittest.TestCase):
     ])
     def test_that_file_can_be_found_in_path(self, path: str, expected: bool):
         result = ConfigReadHandler.read_config_file(os.path.join(self.configPath, path))
-        assert isinstance(result, ChainlinkConfigModel) is expected
+        assert isinstance(result, ChainfileModel) is expected
 
     def test_that_model_gets_created_correctly(self):
         result = ConfigReadHandler.read_config_file(os.path.join(self.configPath, 'chainfile.yml'))
-        assert result == self.chainlinkConfigModel
+        assert result == self.ChainfileModel
 
 
 if __name__ == '__main__':

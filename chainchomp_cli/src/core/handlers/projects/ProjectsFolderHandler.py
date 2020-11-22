@@ -1,5 +1,7 @@
 import os
 from typing import List
+
+from chainchomplib import LoggerInterface
 from chainchomplib.data import PathProvider
 
 
@@ -21,8 +23,6 @@ class ProjectsFolderHandler:
 
         try:
             os.mkdir(PathProvider.projects_folder())
-        except OSError:
-            # TODO Proper exception
-            print('Failed to create projects dir')
-
+        except OSError as exception:
+            LoggerInterface.error(f'Failed to create projects directory with exception: {exception}')
         return True

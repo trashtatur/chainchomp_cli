@@ -1,13 +1,13 @@
 import os
 
 import yaml
-from chainchomplib.configlayer.model.ChainlinkConfigModel import ChainlinkConfigModel
+from chainchomplib.configlayer.model.ChainfileModel import ChainfileModel
 
 
 class ConfigWriterHandler:
 
     @staticmethod
-    def write_config_file(chainlink_model: ChainlinkConfigModel, path: str, force):
+    def write_config_file(chainlink_model: ChainfileModel, path: str, force):
         config_dict = {
             'project': chainlink_model.project_name,
             'chainlink': {
@@ -17,7 +17,6 @@ class ConfigWriterHandler:
             },
             'start': chainlink_model.start,
             'stop': chainlink_model.stop,
-            'masterLink': chainlink_model.is_master_link,
             'profile': chainlink_model.profile
         }
         if not os.path.isdir(path):
@@ -30,6 +29,7 @@ class ConfigWriterHandler:
             try:
                 return yaml.dump(config_dict, new_chainfile, default_flow_style=False)
             finally:
+                new_chainfile.close()
                 if os.path.isfile(os.path.join(path, 'chainfile.yml')):
                     return True
                 return False

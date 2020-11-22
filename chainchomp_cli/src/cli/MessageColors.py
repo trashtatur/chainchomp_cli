@@ -1,0 +1,5 @@
+INFO = 'cyan'
+ERROR = 'red'
+WARNING = 'yellow'
+PROMPT = 'bright_magenta'
+SUCCESS = 'green'

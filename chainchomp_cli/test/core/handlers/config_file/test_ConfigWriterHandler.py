@@ -3,7 +3,7 @@ import shutil
 import unittest
 
 import yaml
-from chainchomplib.configlayer.model.ChainlinkConfigModel import ChainlinkConfigModel
+from chainchomplib.configlayer.model.ChainfileModel import ChainfileModel
 from chainchomplib.data import PathProvider
 from parameterized import parameterized
 
@@ -15,14 +15,13 @@ class ConfigWriterHandlerTest(unittest.TestCase):
     def setUp(self, fs=None) -> None:
         self.configPath = os.path.join(PathProvider.base_config_folder(), 'configFileWriter')
         os.mkdir(self.configPath)
-        self.chainlinkModel = ChainlinkConfigModel(
+        self.chainlinkModel = ChainfileModel(
             'test',
             'test',
             'test',
             'test',
             'test',
             'test',
-            False,
             'test',
             'test'
         )
@@ -35,7 +34,6 @@ class ConfigWriterHandlerTest(unittest.TestCase):
             },
             'start': 'test',
             'stop': 'test',
-            'masterLink': False,
             'profile': 'test'
         }
 

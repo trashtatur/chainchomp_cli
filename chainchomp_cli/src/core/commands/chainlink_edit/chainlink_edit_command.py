@@ -1,10 +1,11 @@
 import os
 
 import click
-from chainchomplib.configlayer.model.ChainlinkConfigModel import ChainlinkConfigModel
+from chainchomplib.configlayer.model.ChainfileModel import ChainfileModel
+from chainchomplib.data import PathProvider
 from click import echo, style
 
-from chainchomp_cli.src.MessageColorEnum import MessageColorEnum
+from chainchomp_cli.src.cli import MessageColors
 from chainchomp_cli.src.core.handlers.config_file.ConfigReadHandler import ConfigReadHandler
 from chainchomp_cli.src.core.handlers.config_file.ConfigWriterHandler import ConfigWriterHandler
 from chainchomp_cli.src.core.handlers.projects.ProjectFileHandler import ProjectFileHandler
@@ -27,71 +28,102 @@ def chainlink_edit(path):
     If the file is found Chainchomp will allow you to edit it through command prompts
     :return:
     """
-    echo(style('Attempting to read the provided path for the chainlink file', fg=MessageColorEnum.INFO))
+    echo(style('Attempting to read the provided path for the chainlink file', fg=MessageColors.INFO))
 
     config_model = ConfigReadHandler.read_config_file(path)
 
     if config_model is None:
         echo(style('Could not read the provided chainfile or could not find it in the provided path',
-                   fg=MessageColorEnum.ERROR))
+                   fg=MessageColors.ERROR))
         return
 
     echo(
         style(
             'You will now be asked about individual changes you might want to make. '
             'To skip one just press enter when asked to change something',
-            fg=MessageColorEnum.INFO
+            fg=MessageColors.INFO
         )
     )
 
     project = click.prompt(
         style(
-            'If you want to reassing the chainlink to another project please type the name in now:',
-            fg=MessageColorEnum.PROMPT
+            'If you want to reassign the chainlink to another project please type the name in now:',
+            fg=MessageColors.PROMPT
         )
     )
 
     if project:
         config_model.project_name = project
-        # TODO Remove from old project
-        add_to_project(project, config_model.chainlink_name)
+        ProjectFileHandler.remove_chainlink_from_all_projects(config_model.chainlink_name)
+        if not os.path.isfile(os.path.join(PathProvider.projects_folder(), project)):
+            new_project = click.confirm(
+                style(
+                    'The project you chose does not exist yet. Should chainchomp create it?:',
+                    fg=MessageColors.PROMPT
+                )
+            )
+            if new_project:
+                echo(
+                    style('The project is being created and the chainlink will be added to it', fg=MessageColors.INFO)
+                )
+                project_created = ProjectFileHandler.create_new_project(project, [config_model.chainlink_name])
+                if project_created:
+                    echo(
+                        style(
+                            'The project has been created successfully and the chainlink was added.',
+                            fg=MessageColors.SUCCESS
+                        )
+                    )
+                if not project_created:
+                    echo(style(f'Chainchomp could not create the project "{project}".', fg=MessageColors.ERROR))
+            else:
+                echo(
+                    style(
+                        f'Chainchomp will ignore all project settings now. '
+                        f'Please consider this and maybe rerun this command or another more suited command',
+                        fg=MessageColors.WARNING
+                    )
+                )
+
+        else:
+            ProjectFileHandler.add_chainlink_to_project(config_model.chainlink_name, project)
 
     name = click.prompt(
-        style('If you want to rename the chainlink please type the name in now:', fg=MessageColorEnum.PROMPT)
+        style('If you want to rename the chainlink please type the name in now:', fg=MessageColors.PROMPT)
     )
     if name:
         config_model.chainlink_name = name
 
     next_link = click.prompt(
-        style('If you want to set a next chainlink please type it in now:', fg=MessageColorEnum.PROMPT)
+        style('If you want to set a next chainlink please type it in now:', fg=MessageColors.PROMPT)
     )
 
     if next_link:
         config_model.next_link = next_link
 
     previous_link = click.prompt(
-        style('If you want to set a previous chainlink please type it in now:', fg=MessageColorEnum.PROMPT)
+        style('If you want to set a previous chainlink please type it in now:', fg=MessageColors.PROMPT)
     )
 
     if previous_link:
         config_model.previous_link = previous_link
 
     start = click.prompt(
-        style('If you want to set a start script please type it in now:', fg=MessageColorEnum.PROMPT)
+        style('If you want to set a start script please type it in now:', fg=MessageColors.PROMPT)
     )
 
     if start:
         config_model.start = start
 
     stop = click.prompt(
-        style('If you want to set a stop script please type it in now:', fg=MessageColorEnum.PROMPT)
+        style('If you want to set a stop script please type it in now:', fg=MessageColors.PROMPT)
     )
 
     if stop:
         config_model.stop = stop
 
     master_link = click.confirm(
-        style('Is this a master link', fg=MessageColorEnum.PROMPT),
+        style('Is this a master link', fg=MessageColors.PROMPT),
         default=config_model.is_master_link
     )
 
@@ -99,37 +131,32 @@ def chainlink_edit(path):
         config_model.is_master_link = master_link
 
     adapter = click.prompt(
-        style('If you want to change the adapter that is used please type that in now', fg=MessageColorEnum.PROMPT)
+        style('If you want to change the adapter that is used please type that in now', fg=MessageColors.PROMPT)
     )
 
     if adapter:
-        config_model.mq_type = adapter
+        config_model.adapter = adapter
 
     profile = click.prompt(
-        style('If you want to change the profile that is used please type that in now', fg=MessageColorEnum.PROMPT)
+        style('If you want to change the profile that is used please type that in now', fg=MessageColors.PROMPT)
     )
 
     if profile:
         config_model.profile = profile
 
-    echo(style('Attempting to write new information to chainfile...', fg=MessageColorEnum.INFO))
+    echo(style('Attempting to write new information to chainfile...', fg=MessageColors.INFO))
     edit_chainfile(config_model, path)
 
 
-def add_to_project(project_name: str, chainlink_name: str):
-    project_file_handler = ProjectFileHandler()
-    project_file_handler.add_chainlink_to_project(chainlink_name, project_name)
-
-
-def edit_chainfile(chainlink_config_model: ChainlinkConfigModel, path: str):
+def edit_chainfile(chainlink_config_model: ChainfileModel, path: str):
     actual_path = path
     if os.path.isfile(path):
         actual_path = os.path.dirname(path)
-    echo(style('Now editing the chainfile...', fg=MessageColorEnum.INFO))
+    echo(style('Now editing the chainfile...', fg=MessageColors.INFO))
     file_created = ConfigWriterHandler.write_config_file(chainlink_config_model, actual_path, True)
     if file_created is None:
-        echo(style(f'Could not overwrite chainfile', fg=MessageColorEnum.WARNING))
+        echo(style(f'Could not overwrite chainfile', fg=MessageColors.WARNING))
     if not file_created:
-        echo(style(f'Failed to write the chainfile to: {path}', fg=MessageColorEnum.ERROR))
+        echo(style(f'Failed to write the chainfile to: {path}', fg=MessageColors.ERROR))
     else:
-        echo(style(f'Successfully edited chainfile in: {actual_path}', fg=MessageColorEnum.SUCCESS))
+        echo(style(f'Successfully edited chainfile in: {actual_path}', fg=MessageColors.SUCCESS))
