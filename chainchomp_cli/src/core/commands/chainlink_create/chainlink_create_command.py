@@ -65,13 +65,6 @@ def chainlink_create(path: str, force: bool):
         create_or_add_to_project(project_name, chainlink_name, user_wants_new_project)
         return
 
-    master_link = click.confirm(
-        style('Is this chainlink a Master link?', fg=MessageColors.PROMPT),
-        default=chainfile_model.is_master_link
-    )
-
-    chainfile_model.is_master_link = master_link
-
     start_script = click.confirm(
         style('Do you want to provide information about a start script', fg=MessageColors.PROMPT),
         default=False

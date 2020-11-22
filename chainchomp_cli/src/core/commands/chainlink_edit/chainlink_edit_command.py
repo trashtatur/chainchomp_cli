@@ -122,14 +122,6 @@ def chainlink_edit(path):
     if stop:
         config_model.stop = stop
 
-    master_link = click.confirm(
-        style('Is this a master link', fg=MessageColors.PROMPT),
-        default=config_model.is_master_link
-    )
-
-    if master_link != config_model.is_master_link:
-        config_model.is_master_link = master_link
-
     adapter = click.prompt(
         style('If you want to change the adapter that is used please type that in now', fg=MessageColors.PROMPT)
     )
