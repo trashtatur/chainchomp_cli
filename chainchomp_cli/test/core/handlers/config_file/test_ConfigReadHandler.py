@@ -15,8 +15,8 @@ class ConfigReadHandlerTest(unittest.TestCase):
         self.ChainfileModel = ChainfileModel(
             'test project',
             'test name',
-            'test next',
-            'test previous',
+            ['test next'],
+            ['test previous'],
             'test start',
             'test stop',
             'test adapter',

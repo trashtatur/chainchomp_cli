@@ -1,4 +1,5 @@
 project: 'test'
 chainlink:
   name: 'test'
-  next: 'test'
+  next:
+    - 'test'

@@ -13,9 +13,11 @@ class FixturesWriterHandlerTest(unittest.TestCase):
     def setUp(self) -> None:
         self.fixtures_path = PathProvider.fixtures_folder()
         self.DEFAULT_CONFIG_DICT = {
+            'project': 'default',
             'chainlink': {
-                'name': 'default',
-                'next': 'default',
+                'name': ['default'],
+                'next': ['default'],
+                'previous': 'default',
             },
             'start': 'echo "no start script provided"',
             'stop': 'echo "no stop script provided"',

@@ -8,9 +8,11 @@ from chainchomplib.data import PathProvider
 class FixturesWriterHandler:
 
     DEFAULT_CONFIG_DICT = {
+        'project': 'default',
         'chainlink': {
-            'name': 'default',
-            'next': 'default',
+            'name': ['default'],
+            'next': ['default'],
+            'previous': 'default',
         },
         'start': 'echo "no start script provided"',
         'stop': 'echo "no stop script provided"',

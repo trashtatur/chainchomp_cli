@@ -2,9 +2,9 @@ import os
 
 import yaml
 from chainchomplib.configlayer.model.ChainfileModel import ChainfileModel
-from chainchomplib.configlayer.verify.SchemaVerifier import SchemaVerifier
-from chainchomplib.configlayer.verify.schema.ChainfileSchema import ChainfileSchema
 from chainchomplib.exceptions.Exceptions import NotValidException
+from chainchomplib.verify.SchemaVerifier import SchemaVerifier
+from chainchomplib.verify.schema.ChainfileSchema import ChainfileSchema
 
 
 class ConfigReadHandler:
