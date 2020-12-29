@@ -14,7 +14,7 @@ class ChainlinkResolver(AbstractResolver):
     def resolve(name: str) -> ChainfileModel or None:
 
         if not os.path.isfile(os.path.join(PathProvider.chainlinks_folder(), f'{name}.yml')):
-            LoggerInterface.warning(f'A chainlink with the name {name} is not registered')
+            LoggerInterface.error(f'A chainlink with the name {name} is not registered')
             return None
 
         with open(os.path.join(PathProvider.chainlinks_folder(), f'{name}.yml', 'r')) as registered_chainlink:

@@ -18,7 +18,8 @@ class SetupHandler:
                and PathProvider.env_var_folder().is_dir() \
                and PathProvider.profiles_folder().is_dir() \
                and PathProvider.fixtures_folder().is_dir() \
-               and PathProvider.installed_adapters_folder().is_dir()
+               and PathProvider.installed_adapters_folder().is_dir() \
+               and PathProvider.chainlinks_folder().is_dir()
 
         @click.command(hidden=True)
         def is_not_setup():
