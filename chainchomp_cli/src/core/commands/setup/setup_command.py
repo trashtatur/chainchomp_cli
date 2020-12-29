@@ -6,6 +6,7 @@ from click import style, echo
 
 from chainchomp_cli.src.cli import MessageColors
 from chainchomp_cli.src.core.handlers.adapter.AdapterFolderHandler import AdapterFolderHandler
+from chainchomp_cli.src.core.handlers.chainlink.ChainlinkFolderHandler import ChainlinkFolderHandler
 from chainchomp_cli.src.core.handlers.environmnent.EnvironmentFolderHandler import EnvironmentFolderHandler
 from chainchomp_cli.src.core.handlers.fixtures.FixturesFolderHandler import FixturesFolderHandler
 from chainchomp_cli.src.core.handlers.fixtures.FixturesWriterHandler import FixturesWriterHandler
@@ -21,7 +22,7 @@ def setup():
     click.confirm(style('Welcome to Chainchomp. Do you want to run the setup?', fg=MessageColors.INFO), abort=True)
 
     with click.progressbar(
-            length=len(inspect.getmembers(PathProvider, inspect.isfunction)),
+            length=len(inspect.getmembers(PathProvider, inspect.isfunction)) - 1,
             label='Running setup...'
     ) as bar:
         echo(style('Creating the base chainchomp folder if it does not already exist', fg=MessageColors.INFO))
@@ -49,6 +50,15 @@ def setup():
             echo(style(f'{PathProvider.env_var_folder()}', fg=MessageColors.INFO))
         if not created_environments_folder:
             echo(style('Environments folder already exists. Moving on', fg=MessageColors.WARNING))
+        bar.update(1)
+
+        echo(style('Creating folder for registered chainlinks if it does not already exist', fg=MessageColors.INFO))
+        created_registered_chainlinks_folder = ChainlinkFolderHandler.create_chainlinks_folder()
+        if created_registered_chainlinks_folder:
+            echo(style('Registered chainlinks folder in path:', fg=MessageColors.INFO))
+            echo(style(f'{PathProvider.chainlinks_folder()}', fg=MessageColors.INFO))
+        if not created_registered_chainlinks_folder:
+            echo(style('Registered chainlinks folder already exists. Moving on', fg=MessageColors.WARNING))
         bar.update(1)
 
         echo(style('Creating folder for profiles if it does not already exist', fg=MessageColors.INFO))
