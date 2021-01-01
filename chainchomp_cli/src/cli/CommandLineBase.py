@@ -1,14 +1,14 @@
 import click
 
-from chainchomp_cli.src.core.commands.chainlink_create import chainlink_create_command
-from chainchomp_cli.src.core.commands.chainlink_edit import chainlink_edit_command
-from chainchomp_cli.src.core.commands.adapter_list import chainlink_adapters_command
-from chainchomp_cli.src.core.commands.chainlink_ping import chainlink_ping_command
-from chainchomp_cli.src.core.commands.chainlink_profile import chainlink_profile_command
-from chainchomp_cli.src.core.commands.chainchomp_project import chainchomp_project_new_command
-from chainchomp_cli.src.core.commands.chainlink_start import chainlink_start_command
-from chainchomp_cli.src.core.commands.chainlink_stop import chainlink_stop_command
-from chainchomp_cli.src.core.commands.setup import setup_command
+from chainchomp_cli.src.commands.chainlink_create import chainlink_create_command
+from chainchomp_cli.src.commands.chainlink_edit import chainlink_edit_command
+from chainchomp_cli.src.commands.adapter_list import chainlink_adapters_command
+from chainchomp_cli.src.commands.chainlink_ping import chainlink_ping_command
+from chainchomp_cli.src.commands.chainlink_profile import chainlink_profile_command
+from chainchomp_cli.src.commands.chainchomp_project import chainchomp_project_new_command
+from chainchomp_cli.src.commands.chainlink_start import chainlink_start_command
+from chainchomp_cli.src.commands.chainlink_stop import chainlink_stop_command
+from chainchomp_cli.src.commands.setup import setup_command
 
 
 @click.group()
