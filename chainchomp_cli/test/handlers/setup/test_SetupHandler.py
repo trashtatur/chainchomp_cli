@@ -31,6 +31,10 @@ class SetupHandlerTest(unittest.TestCase):
             os.rmdir(PathProvider.projects_folder())
         except OSError:
             pass
+        try:
+            os.rmdir(PathProvider.chainlinks_folder())
+        except OSError:
+            pass
 
     @parameterized.expand([
         (False, False, False, False, False, False, False),

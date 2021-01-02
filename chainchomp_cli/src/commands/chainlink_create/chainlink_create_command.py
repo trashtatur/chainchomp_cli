@@ -4,12 +4,12 @@ from chainchomplib.configlayer.model.ChainfileModel import ChainfileModel
 from click import echo, style
 
 from chainchomp_cli.src.cli import MessageColors
-from chainchomp_cli.src.handlers.adapter import AdapterFolderHandler
-from chainchomp_cli.src.handlers.chainlink import ChainlinkRegistrationHandler
+from chainchomp_cli.src.handlers.adapter.AdapterFolderHandler import AdapterFolderHandler
+from chainchomp_cli.src.handlers.chainlink.ChainlinkRegistrationHandler import ChainlinkRegistrationHandler
 from chainchomp_cli.src.handlers.config_file.ChainfileWriterHandler import ChainfileWriterHandler
 from chainchomp_cli.src.handlers.projects.ProjectFileHandler import ProjectFileHandler
 from chainchomp_cli.src.handlers.projects.ProjectsFolderHandler import ProjectsFolderHandler
-from chainchomp_cli.src.handlers.setup import SetupHandler
+from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @SetupHandler.is_setup
@@ -111,14 +111,14 @@ def chainlink_create(path: str, force: bool):
     registered = ChainlinkRegistrationHandler.register_chainlink(path)
     if registered:
         echo(style(
-            'Chainlink was successfully registered. No need to run chainlink:register separately'
-            , MessageColors.SUCCESS
+            'Chainlink was successfully registered. No need to run chainlink:register separately',
+            MessageColors.SUCCESS
         ))
     else:
         echo(style(
             'Chainlink was not registered. Check the chainfile and run chainlink:register separately'
-            'once the Chainfile is fixed.'
-            , MessageColors.ERROR
+            'once the Chainfile is fixed.',
+            MessageColors.ERROR
         ))
 
 

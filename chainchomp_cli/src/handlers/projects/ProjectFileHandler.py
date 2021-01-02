@@ -8,7 +8,7 @@ from chainchomplib.data import PathProvider
 class ProjectFileHandler:
 
     @staticmethod
-    def add_chainlink_to_project(chainlink_name: str, project_name: str):
+    def add_chainlink_to_project(chainlink_name: str, project_name: str) -> bool:
         projects_folder = PathProvider.projects_folder()
 
         if not os.path.isfile(os.path.join(projects_folder, project_name)):
@@ -45,7 +45,7 @@ class ProjectFileHandler:
                 existing_project_file.close()
 
     @staticmethod
-    def remove_chainlink_from_all_projects(chainlink_name: str):
+    def remove_chainlink_from_all_projects(chainlink_name: str) -> bool:
         projects_folder = PathProvider.projects_folder()
         times_removed = 0
         for filename in os.listdir(projects_folder):
@@ -58,6 +58,7 @@ class ProjectFileHandler:
                         f'Could not load the project file for project to remove a chainlink from it {filename}'
                         f' with exception: {exception}'
                     )
+                    return False
                 else:
                     existing_chainlink_data: list = existing_data.get('chainlinks', [])
                     if len([elem for elem in existing_chainlink_data if elem == chainlink_name]) is 0:
@@ -104,6 +105,9 @@ class ProjectFileHandler:
             try:
                 yaml.safe_dump(project_dict, new_project_file, default_flow_style=False)
             except yaml.YAMLError as exception:
+                LoggerInterface.error(
+                    f'Creating the project file for project {project_name} failed with exception: {exception}'
+                )
                 return False
             else:
                 return True

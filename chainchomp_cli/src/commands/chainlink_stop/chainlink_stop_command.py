@@ -3,7 +3,7 @@ import os
 import click
 from chainchomplib.configlayer.resolver.ChainfileResolver import ChainfileResolver
 
-from chainchomp_cli.src.handlers.setup import SetupHandler
+from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @SetupHandler.is_setup

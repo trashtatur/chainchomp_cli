@@ -5,16 +5,16 @@ from chainchomplib.data import PathProvider
 from click import style, echo
 
 from chainchomp_cli.src.cli import MessageColors
-from chainchomp_cli.src.handlers.adapter import AdapterFolderHandler
-from chainchomp_cli.src.handlers.chainlink import ChainlinkFolderHandler
+from chainchomp_cli.src.handlers.adapter.AdapterFolderHandler import AdapterFolderHandler
+from chainchomp_cli.src.handlers.chainlink.ChainlinkFolderHandler import ChainlinkFolderHandler
 from chainchomp_cli.src.handlers.environmnent.EnvironmentFolderHandler import EnvironmentFolderHandler
 from chainchomp_cli.src.handlers.fixtures.FixturesFolderHandler import FixturesFolderHandler
-from chainchomp_cli.src.handlers import FixturesWriterHandler
+from chainchomp_cli.src.handlers.fixtures.FixturesWriterHandler import FixturesWriterHandler
 from chainchomp_cli.src.handlers.logs.LogsFolderHandler import LogsFolderHandler
-from chainchomp_cli.src.handlers import LogsWriterHandler
+from chainchomp_cli.src.handlers.logs.LogsWriterHandler import LogsWriterHandler
 from chainchomp_cli.src.handlers.profiles.ProfilesFolderHandler import ProfilesFolderHandler
 from chainchomp_cli.src.handlers.projects.ProjectsFolderHandler import ProjectsFolderHandler
-from chainchomp_cli.src.handlers.setup import SetupHandler
+from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @click.command('chainchomp:setup')

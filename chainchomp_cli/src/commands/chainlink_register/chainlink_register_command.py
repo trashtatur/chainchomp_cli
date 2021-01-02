@@ -1,8 +1,8 @@
 import os
 
 import click
-from chainchomp_cli.src.handlers.chainlink import ChainlinkRegistrationHandler
-from chainchomp_cli.src.handlers.setup import SetupHandler
+from chainchomp_cli.src.handlers.chainlink.ChainlinkRegistrationHandler import ChainlinkRegistrationHandler
+from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @SetupHandler.is_setup

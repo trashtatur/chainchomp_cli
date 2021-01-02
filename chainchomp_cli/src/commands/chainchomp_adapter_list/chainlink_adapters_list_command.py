@@ -2,12 +2,12 @@ import click
 from click import style, echo
 
 from chainchomp_cli.src.cli import MessageColors
-from chainchomp_cli.src.handlers.adapter import AdapterFolderHandler
-from chainchomp_cli.src.handlers.setup import SetupHandler
+from chainchomp_cli.src.handlers.adapter.AdapterFolderHandler import AdapterFolderHandler
+from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @SetupHandler.is_setup
-@click.command('adapter:list')
+@click.command('chainchomp:adapter:list')
 def adapter_list():
     """
     List all adapters that are currently known

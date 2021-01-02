@@ -9,7 +9,7 @@ from chainchomp_cli.src.cli import MessageColors
 from chainchomp_cli.src.handlers.config_file.ConfigReadHandler import ConfigReadHandler
 from chainchomp_cli.src.handlers.config_file.ChainfileWriterHandler import ChainfileWriterHandler
 from chainchomp_cli.src.handlers.projects.ProjectFileHandler import ProjectFileHandler
-from chainchomp_cli.src.handlers.setup import SetupHandler
+from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @SetupHandler.is_setup

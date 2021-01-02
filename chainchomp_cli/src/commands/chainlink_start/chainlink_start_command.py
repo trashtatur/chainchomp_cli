@@ -2,19 +2,19 @@ import os
 from time import sleep
 
 import click
-import requests
 from click import echo, style
 
 from chainchomp_cli.src.cli import MessageColors
-from chainchomp_cli.src.handlers.adapter import AdapterResolver
-from chainchomp_cli.src.handlers.chainlink import ChainlinkResolver
-from chainchomp_cli.src.handlers.setup import SetupHandler
+from chainchomp_cli.src.handlers.adapter.AdapterResolver import AdapterResolver
+from chainchomp_cli.src.handlers.chainlink.ChainlinkResolver import ChainlinkResolver
+from chainchomp_cli.src.handlers.chainlink.ChainlinkStartHandler import ChainlinkStartHandler
+from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @SetupHandler.is_setup
 @click.command('chainlink:start')
 @click.argument('chainlinkname')
-def chainlink_start(chainlinkname):
+def chainlink_start(chainlinkname: str) -> None:
     """
     This command attempts to call the start script inside of a chainfile
     and start the necessary adapter as well
@@ -36,8 +36,17 @@ def chainlink_start(chainlinkname):
 
     echo(style(f'Now attempting to start necessary adapter for {chainlinkname}', fg=MessageColors.INFO))
     adapter_started = os.system(adapter_data['start'])
+    if adapter_started:
+        echo(style('The start script of the adapter ran through successfully', MessageColors.SUCCESS))
+    else:
+        echo(style('The start script of the adapter seems to have encountered a problem!', MessageColors.WARNING))
+
     echo(style(f'Now attempting to start the chainlink itself', fg=MessageColors.INFO))
     chainlink_started = os.system(chainfile_model.start)
+    if chainlink_started:
+        echo(style('The start script of the chainlink ran through successfully', MessageColors.SUCCESS))
+    else:
+        echo(style('The start script of the chainlink seems to have encountered a problem!', MessageColors.WARNING))
 
     urls_done = {
         'next': [],
@@ -47,36 +56,7 @@ def chainlink_start(chainlinkname):
     echo(style(f'Now attempting to contact other chainlinks...', fg=MessageColors.INFO))
     while len(urls_done['next'] != chainfile_model.next_link) and \
             len(urls_done['previous'] != chainfile_model.previous_link):
-        for url in chainfile_model.next_link:
-            if url not in urls_done['url_tries'].keys():
-                urls_done['url_tries'][url] = 0
-            if urls_done['url_tries'][url] >= 10 and url not in urls_done['next']:
-                urls_done['next'].append(url)
-            if url in urls_done['next']:
-                continue
-            echo(style(f'Trying to next contact chainlink : {url}', fg=MessageColors.INFO))
-            url = f"http://{url.split('::')[0]}:{4410}"
-            params = {'chainfile': chainfile_model.get_serialized()}
-            response = requests.get(url=url, params=params, timeout=1)
-            if response.status_code == 200:
-                echo(style(f'Successfully transmitted to chainlink : {url}', fg=MessageColors.SUCCESS))
-                urls_done['next'].append(url)
-
-        for url in chainfile_model.previous_link:
-            if url not in urls_done['url_tries'].keys():
-                urls_done['url_tries'][url] = 0
-            if urls_done['url_tries'][url] >= 10 and url not in urls_done['previous']:
-                urls_done['previous'].append(url)
-            if url in urls_done['previous']:
-                continue
-            echo(style(f'Trying to next contact chainlink : {url}', fg=MessageColors.INFO))
-            url = f"http://{url.split('::')[0]}:{4410}/adapter/assign/link"
-            params = {'chainfile': chainfile_model.get_serialized()}
-            response = requests.get(url=url, params=params, timeout=1)
-            if response.status_code == 200:
-                echo(style(f'Successfully transmitted to chainlink : {url}', fg=MessageColors.SUCCESS))
-                urls_done['previous'].append(url)
-            urls_done['url_tries'][url] += 1
+        urls_done = ChainlinkStartHandler.contact_other_chainlinks(chainfile_model, urls_done)
         sleep(5)
 
     failed_contacts = [url for url in urls_done['url_tries'].keys() if urls_done['url_tries'][url] >= 10]

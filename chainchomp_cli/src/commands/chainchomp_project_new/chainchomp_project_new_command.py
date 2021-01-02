@@ -3,7 +3,7 @@ from click import echo, style
 
 from chainchomp_cli.src.cli import MessageColors
 from chainchomp_cli.src.handlers.projects.ProjectFileHandler import ProjectFileHandler
-from chainchomp_cli.src.handlers.setup import SetupHandler
+from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @SetupHandler.is_setup
