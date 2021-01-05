@@ -28,9 +28,9 @@ class ProjectFileHandlerTest(unittest.TestCase):
         result = ProjectFileHandler.create_new_project(project_name, chainlink_names)
 
         assert result is expected
-        assert os.path.isfile(os.path.join(PathProvider.projects_folder(), project_name)) is expected
+        assert os.path.isfile(os.path.join(PathProvider.projects_folder(), f'{project_name}.yml')) is expected
 
-        with open(os.path.join(PathProvider.projects_folder(), project_name)) as project_file:
+        with open(os.path.join(PathProvider.projects_folder(), f'{project_name}.yml')) as project_file:
             loaded_dict = yaml.safe_load(project_file)
             assert loaded_dict == content
 

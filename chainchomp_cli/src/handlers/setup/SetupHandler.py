@@ -15,9 +15,7 @@ class SetupHandler:
     def is_setup(func: Callable) -> Callable:
         is_setup = PathProvider.base_config_folder().is_dir() \
                and PathProvider.projects_folder().is_dir() \
-               and PathProvider.env_var_folder().is_dir() \
                and PathProvider.profiles_folder().is_dir() \
-               and PathProvider.fixtures_folder().is_dir() \
                and PathProvider.installed_adapters_folder().is_dir() \
                and PathProvider.chainlinks_folder().is_dir()
 

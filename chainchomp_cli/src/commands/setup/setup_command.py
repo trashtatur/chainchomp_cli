@@ -7,9 +7,7 @@ from click import style, echo
 from chainchomp_cli.src.cli import MessageColors
 from chainchomp_cli.src.handlers.adapter.AdapterFolderHandler import AdapterFolderHandler
 from chainchomp_cli.src.handlers.chainlink.ChainlinkFolderHandler import ChainlinkFolderHandler
-from chainchomp_cli.src.handlers.environmnent.EnvironmentFolderHandler import EnvironmentFolderHandler
-from chainchomp_cli.src.handlers.fixtures.FixturesFolderHandler import FixturesFolderHandler
-from chainchomp_cli.src.handlers.fixtures.FixturesWriterHandler import FixturesWriterHandler
+from chainchomp_cli.src.handlers.environment.EnvironmentFolderHandler import EnvironmentFolderHandler
 from chainchomp_cli.src.handlers.logs.LogsFolderHandler import LogsFolderHandler
 from chainchomp_cli.src.handlers.logs.LogsWriterHandler import LogsWriterHandler
 from chainchomp_cli.src.handlers.profiles.ProfilesFolderHandler import ProfilesFolderHandler
@@ -47,7 +45,7 @@ def setup():
         created_environments_folder = EnvironmentFolderHandler.create_environments_folder()
         if created_environments_folder:
             echo(style('Created environments folder in path:', fg=MessageColors.INFO))
-            echo(style(f'{PathProvider.env_var_folder()}', fg=MessageColors.INFO))
+            echo(style(f'{PathProvider.environment_variables_folder()}', fg=MessageColors.INFO))
         if not created_environments_folder:
             echo(style('Environments folder already exists. Moving on', fg=MessageColors.WARNING))
         bar.update(1)
@@ -79,24 +77,6 @@ def setup():
             echo(style(f'{PathProvider.installed_adapters_folder()}', fg=MessageColors.INFO))
         if not created_adapters_folder:
             echo(style('Adapters folder already exists. Moving on', fg=MessageColors.WARNING))
-        bar.update(1)
-
-        echo(style('Creating folder for fixtures if it does not already exist', fg=MessageColors.INFO))
-        created_fixture_default_files = FixturesFolderHandler.create_fixtures_folder()
-        if created_fixture_default_files:
-            echo(style('Created fixtures folder in path:', fg=MessageColors.INFO))
-            echo(style(f'{PathProvider.fixtures_folder()}', fg=MessageColors.INFO))
-        if not created_fixture_default_files:
-            echo(style('Fixtures folder already exists. Moving on', fg=MessageColors.WARNING))
-        bar.update(1)
-
-        echo(style('Creating default fixture files if they don\'t already exist', fg=MessageColors.INFO))
-        created_fixture_default_files = FixturesWriterHandler.write_default_chainfile_config()
-        if created_fixture_default_files:
-            echo(style('Created fixture default files in path:', fg=MessageColors.INFO))
-            echo(style(f'{PathProvider.fixtures_folder()}', fg=MessageColors.INFO))
-        if not created_fixture_default_files:
-            echo(style('Fixture default files already exist. Moving on', fg=MessageColors.WARNING))
         bar.update(1)
 
         echo(style('Creating logs folder if it does not already exist', fg=MessageColors.INFO))

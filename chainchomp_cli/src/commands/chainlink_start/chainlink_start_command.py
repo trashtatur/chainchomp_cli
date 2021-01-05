@@ -48,6 +48,8 @@ def chainlink_start(chainlinkname: str) -> None:
     else:
         echo(style('The start script of the chainlink seems to have encountered a problem!', MessageColors.WARNING))
 
+    ChainlinkStartHandler.contact_local_adapter(chainfile_model)
+
     urls_done = {
         'next': [],
         'previous': [],
@@ -56,7 +58,7 @@ def chainlink_start(chainlinkname: str) -> None:
     echo(style(f'Now attempting to contact other chainlinks...', fg=MessageColors.INFO))
     while len(urls_done['next'] != chainfile_model.next_link) and \
             len(urls_done['previous'] != chainfile_model.previous_link):
-        urls_done = ChainlinkStartHandler.contact_other_chainlinks(chainfile_model, urls_done)
+        urls_done = ChainlinkStartHandler.contact_remote_chainlinks(chainfile_model, urls_done)
         sleep(5)
 
     failed_contacts = [url for url in urls_done['url_tries'].keys() if urls_done['url_tries'][url] >= 10]

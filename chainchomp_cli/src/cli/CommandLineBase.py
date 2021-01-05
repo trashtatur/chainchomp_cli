@@ -4,11 +4,11 @@ from chainchomp_cli.src.commands.chainlink_create import chainlink_create_comman
 from chainchomp_cli.src.commands.chainlink_edit import chainlink_edit_command
 from chainchomp_cli.src.commands.chainchomp_adapter_list import chainlink_adapters_list_command
 from chainchomp_cli.src.commands.chainlink_ping import chainlink_ping_command
-from chainchomp_cli.src.commands.chainlink_profile import chainlink_profile_command
 from chainchomp_cli.src.commands.chainchomp_project_new import chainchomp_project_new_command
 from chainchomp_cli.src.commands.chainlink_start import chainlink_start_command
 from chainchomp_cli.src.commands.chainlink_stop import chainlink_stop_command
 from chainchomp_cli.src.commands.setup import setup_command
+from chainchomp_cli.src.commands.chainchomp_create_env_var import chainchomp_create_env_var_command
 
 
 @click.group()
@@ -25,7 +25,7 @@ def add_sub_commands():
     chainchomp.add_command(chainchomp_project_new_command.chainchomp_project_new)
     chainchomp.add_command(chainlink_adapters_list_command.adapter_list)
     chainchomp.add_command(chainlink_ping_command.chainlink_ping)
-    chainchomp.add_command(chainlink_profile_command.chainchomp_profile)
+    chainchomp.add_command(chainchomp_create_env_var_command.create_environment_variable)
 
 
 def main():

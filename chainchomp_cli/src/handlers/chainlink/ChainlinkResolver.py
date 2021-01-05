@@ -24,6 +24,6 @@ class ChainlinkResolver(AbstractResolver):
                 LoggerInterface.error(f'Chainlink file could not be loaded with exception: {exception}')
             else:
                 location = data['path']
-                return ChainfileResolver.resolve_config_file(location)
+                return ChainfileResolver.resolve_chainfile(location)
             finally:
                 registered_chainlink.close()

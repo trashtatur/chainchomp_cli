@@ -15,4 +15,4 @@ def adapter_list():
     """
     list_of_installed_adapters = AdapterFolderHandler.provide_list_of_installed_adapters()
     echo(style('Installed Adapters: \n', fg=MessageColors.INFO))
-    echo(style('\n'.join(map(str, list_of_installed_adapters)), fg='cyan'))
+    echo(style('\n'.join(map(str, list_of_installed_adapters)), MessageColors.INFO))

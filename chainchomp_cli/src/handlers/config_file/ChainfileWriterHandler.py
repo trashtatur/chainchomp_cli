@@ -12,8 +12,8 @@ class ChainfileWriterHandler:
             'project': chainlink_model.project_name,
             'chainlink': {
                 'name': chainlink_model.chainlink_name,
-                'next': chainlink_model.next_link if chainlink_model.next_link != '' else 'NONE',
-                'previous': chainlink_model.previous_link if chainlink_model.previous_link != '' else 'NONE',
+                'next': chainlink_model.next_links if chainlink_model.next_links != '' else 'NONE',
+                'previous': chainlink_model.previous_links if chainlink_model.previous_links != '' else 'NONE',
             },
             'start': chainlink_model.start,
             'stop': chainlink_model.stop,

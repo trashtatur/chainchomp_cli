@@ -97,11 +97,12 @@ class ProjectFileHandler:
         projects_folder = PathProvider.projects_folder()
 
         if os.path.isfile(os.path.join(projects_folder, project_name)):
+            LoggerInterface.error(f'The project file for project {project_name} already exists')
             return False
 
         project_dict = {'name': project_name, 'chainlinks': chainlink_names}
 
-        with open(os.path.join(projects_folder, project_name), 'x') as new_project_file:
+        with open(os.path.join(projects_folder, f'{project_name}.yml'), 'x') as new_project_file:
             try:
                 yaml.safe_dump(project_dict, new_project_file, default_flow_style=False)
             except yaml.YAMLError as exception:
