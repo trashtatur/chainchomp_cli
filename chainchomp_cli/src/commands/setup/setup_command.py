@@ -17,6 +17,10 @@ from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 @click.command('chainchomp:setup')
 def setup():
+    """
+    The initial setup command for chainchomp. It initiates important files and folders
+    that are needed for Chainchomp to function.
+    """
     click.confirm(style('Welcome to Chainchomp. Do you want to run the setup?', fg=MessageColors.INFO), abort=True)
 
     with click.progressbar(

@@ -21,9 +21,6 @@ from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
               )
 def chainlink_create(path: str, force: bool):
     """
-    parameters:
-    path: Absolute path to where the config file should be created. Defaults to current working directory
-
     This command creates a configuration file for your project.
     The configuration file will be stored at the current working directory
     (which should be your projects root directory) or at the path that you
@@ -33,8 +30,7 @@ def chainlink_create(path: str, force: bool):
     You get the options to let chainchomp handle and set most of the
     options, though you can always change them later.
     :param path: Absolute path to where the config file should be created. Defaults to current working directory
-    :param force
-    :return:
+    :param force: If you want to overwrite a chainfile you should provide this parameter
     """
 
     echo(style('Welcome to Chainchomp. We can see that you want to add a new chainlink', fg=MessageColors.INFO))

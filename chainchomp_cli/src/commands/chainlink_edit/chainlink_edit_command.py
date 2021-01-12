@@ -17,16 +17,13 @@ from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 @click.argument('path', default=os.getcwd())
 def chainlink_edit(path):
     """
-    parameters:
-    path: Absolute path to the config file. Defaults to current working directory
-
     This command allows you to edit a Chainfile at a given location.
     Chainchomp will look for a file called "chainfile.yml" here.
     If you provide the file directly, through a path, it will also work.
     If it can't be found the command won't do anything.
 
     If the file is found Chainchomp will allow you to edit it through command prompts
-    :return:
+    :param path the path to the chainfile
     """
     echo(style('Attempting to read the provided path for the chainlink file', fg=MessageColors.INFO))
 
