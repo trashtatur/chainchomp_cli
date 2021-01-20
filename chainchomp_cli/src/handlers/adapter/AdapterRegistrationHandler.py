@@ -18,8 +18,8 @@ class AdapterRegistrationHandler:
 
         with open(os.path.join(
                 PathProvider.installed_adapters_folder(),
-                f'{adapter_model.name}.yml', 'x'
-        )) as new_adapter:
+                f'{adapter_model.name}.yml'
+        ), 'x') as new_adapter:
             try:
                 yaml.safe_dump(adapter_model.get_serialized(), new_adapter)
             except yaml.YAMLError as exception:

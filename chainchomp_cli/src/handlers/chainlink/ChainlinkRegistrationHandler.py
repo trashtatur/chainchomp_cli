@@ -35,8 +35,8 @@ class ChainlinkRegistrationHandler:
 
         with open(os.path.join(
                 PathProvider.chainlinks_folder(),
-                f'{chainlink_model.chainlink_name}.yml', 'x'
-        )) as new_chainlink:
+                f'{chainlink_model.chainlink_name}.yml',
+        ), 'x') as new_chainlink:
             try:
                 yaml.safe_dump(data_dict, new_chainlink)
             except yaml.YAMLError as exception:

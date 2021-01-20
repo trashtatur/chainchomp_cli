@@ -13,7 +13,7 @@ class AdapterFolderHandler:
         if not path_to_adapters_folder.is_dir():
             return []
 
-        return [str(os.path.basename(filename))
+        return [str(os.path.basename(filename).split('.')[0])
                 for filename in path_to_adapters_folder.glob('**/*') if filename.is_file()]
 
     @staticmethod

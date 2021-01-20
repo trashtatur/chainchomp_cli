@@ -15,7 +15,7 @@ class AdapterResolver(AbstractResolver):
             LoggerInterface.warning(f'An adapter with the name {name} is not registered')
             return None
 
-        with open(os.path.join(PathProvider.installed_adapters_folder(), f'{name}.yml', 'r')) as registered_adapter:
+        with open(os.path.join(PathProvider.installed_adapters_folder(), f'{name}.yml'), 'r') as registered_adapter:
             try:
                 data = yaml.safe_load(registered_adapter)
             except yaml.YAMLError as exception:

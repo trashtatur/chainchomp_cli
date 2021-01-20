@@ -1,12 +1,13 @@
 import os
+import subprocess
 from time import sleep
 
 import click
+from chainchomplib.configlayer.ChainlinkResolver import ChainlinkResolver
 from click import echo, style
 
 from chainchomp_cli.src.cli import MessageColors
 from chainchomp_cli.src.handlers.adapter.AdapterResolver import AdapterResolver
-from chainchomp_cli.src.handlers.chainlink.ChainlinkResolver import ChainlinkResolver
 from chainchomp_cli.src.handlers.chainlink.ChainlinkStartHandler import ChainlinkStartHandler
 from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
@@ -35,14 +36,20 @@ def chainlink_start(chainlinkname: str) -> None:
         return
 
     echo(style(f'Now attempting to start necessary adapter for {chainlinkname}', fg=MessageColors.INFO))
-    adapter_started = os.system(adapter_data['start'])
+    try:
+        adapter_started = subprocess.run(adapter_data['start'].split(' '))
+    except Exception:
+        adapter_started = False
     if adapter_started:
         echo(style('The start script of the adapter ran through successfully', MessageColors.SUCCESS))
     else:
         echo(style('The start script of the adapter seems to have encountered a problem!', MessageColors.WARNING))
 
     echo(style(f'Now attempting to start the chainlink itself', fg=MessageColors.INFO))
-    chainlink_started = os.system(chainfile_model.start)
+    try:
+        chainlink_started = os.system(chainfile_model.start)
+    except Exception:
+        chainlink_started = False
     if chainlink_started:
         echo(style('The start script of the chainlink ran through successfully', MessageColors.SUCCESS))
     else:
@@ -56,8 +63,8 @@ def chainlink_start(chainlinkname: str) -> None:
         'url_tries': {}
     }
     echo(style(f'Now attempting to contact other chainlinks...', fg=MessageColors.INFO))
-    while len(urls_done['next'] != chainfile_model.next_link) and \
-            len(urls_done['previous'] != chainfile_model.previous_link):
+    while len(urls_done['next']) != len(chainfile_model.next_links) or \
+            len(urls_done['previous']) != len(chainfile_model.previous_links):
         urls_done = ChainlinkStartHandler.contact_remote_chainlinks(chainfile_model, urls_done)
         sleep(5)
 

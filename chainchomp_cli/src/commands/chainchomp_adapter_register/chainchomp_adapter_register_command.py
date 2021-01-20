@@ -11,16 +11,14 @@ from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 @SetupHandler.is_setup
 @click.command('chainchomp:adapter:register')
-@click.argument('name')
 @click.argument('path', default=os.getcwd())
-def adapter_register(name: str, path: str):
+def adapter_register(path: str):
     """
     Registers an adapter
-    :param name: The name of the adapter
     :param path: The path to the adapters root folder. Default is current directory
     """
     echo(style('Starting adapter registration process...', fg=MessageColors.INFO))
-
+    echo(path)
     start_script_set = False
     start_script = ''
     if os.path.isfile(os.path.join(path, 'start.sh')):
@@ -29,7 +27,8 @@ def adapter_register(name: str, path: str):
                 'A start script has been found at the path you provided. '
                 'Do you want to set it as the start script for the adapter?',
                 fg=MessageColors.PROMPT
-            )
+            ),
+            default=True
         )
 
         if set_found_start_script:
@@ -40,7 +39,8 @@ def adapter_register(name: str, path: str):
                 style(
                     'Please provide an absolute path to a start script for your adapter now',
                     MessageColors.PROMPT
-                )
+                ),
+                default=True
             )
             if not os.path.isfile(start_script):
                 is_correct = click.confirm(
@@ -91,8 +91,15 @@ def adapter_register(name: str, path: str):
                 stop_script = stop_script_preliminary
                 stop_script_set = True
 
+    if os.path.isfile(os.path.join(path, 'NAME')):
+        name = open(os.path.join(path, 'NAME'), 'r').read()
+    else:
+        echo(style('You did not provide a name file for your adapter. Aborting!', MessageColors.ERROR))
+        return
+
     adapter_file_model = AdapterFileModel(name, path, start_script, stop_script)
     registered = AdapterRegistrationHandler.register_adapter(adapter_file_model)
+
     if registered:
         echo(style(f'Adapter {name} successfully registered', MessageColors.SUCCESS))
         return
