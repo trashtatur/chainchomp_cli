@@ -17,7 +17,7 @@ def chainlink_stop(chainfile):
 
     chainfile: The full path to the chainfile. Defaults to the current directory where it expects a chainfile.yml
     """
-    chainfile_model = ChainfileResolver().resolve_chainfile(chainfile)
+    chainfile_model = ChainfileResolver().resolve(chainfile)
 
     if chainfile_model.stop is None:
         return

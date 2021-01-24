@@ -37,18 +37,22 @@ def chainlink_create(path: str, force: bool):
     echo(style('What is the project that this chainlink is assigned to', fg=MessageColors.INFO))
     projects_list = ProjectsFolderHandler.provide_list_of_projects()
     user_wants_new_project = False
-    if projects_list is not []:
-        output_string = f'Press 0 to make a new project \n'
-        counter = 1
-        for project in projects_list:
-            output_string += f'{counter}) {project} \n'
-        echo(style('You can choose from already existing projects, or make a new one', fg=MessageColors.INFO))
-        project_name_index = click.prompt(output_string, default=0)
-        if project_name_index == 0:
-            user_wants_new_project = True
-        if project_name_index != 0:
-            project_name = projects_list[project_name_index - 1]
-    if user_wants_new_project:
+    project_name = None
+    while project_name is None:
+        if projects_list:
+            output_string = f'Press 0 to make a new project \n'
+            counter = 1
+            for project in projects_list:
+                output_string += f'{counter}) {project} \n'
+            echo(style('You can choose from already existing projects, or make a new one', fg=MessageColors.INFO))
+            project_name_index = click.prompt(output_string, default=0)
+            if project_name_index == 0:
+                user_wants_new_project = True
+            if project_name_index != 0 and len(projects_list)-1 >= project_name_index:
+                project_name = projects_list[project_name_index - 1]
+        if not projects_list:
+            project_name = click.prompt('Please type in the designated project name now')
+    if user_wants_new_project or projects_list == []:
         project_name = click.prompt('Please type in the designated project name now')
 
     echo(style('Now please provide a name for your chainlink', fg=MessageColors.INFO))

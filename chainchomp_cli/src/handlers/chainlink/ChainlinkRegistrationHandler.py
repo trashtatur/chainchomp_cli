@@ -14,7 +14,7 @@ class ChainlinkRegistrationHandler:
             LoggerInterface.error('Can not find a chainfile at the given path. Aborting!')
             return False
 
-        chainlink_model = ChainfileResolver.resolve_chainfile(
+        chainlink_model = ChainfileResolver.resolve(
             os.path.join(path, 'chainfile.yml')
         )
 

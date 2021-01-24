@@ -3,7 +3,7 @@ import subprocess
 from time import sleep
 
 import click
-from chainchomplib.configlayer.ChainlinkResolver import ChainlinkResolver
+from chainchomplib.configlayer.resolver.ChainlinkResolver import ChainlinkResolver
 from click import echo, style
 
 from chainchomp_cli.src.cli import MessageColors
