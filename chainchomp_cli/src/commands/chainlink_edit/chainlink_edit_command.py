@@ -57,8 +57,6 @@ def chainlink_edit(name):
     )
 
     if project:
-        config_model.project_name = project
-        ProjectFileHandler.remove_chainlink_from_all_projects(config_model.chainlink_name)
         if not ProjectFileHandler.project_exists(project):
             new_project = click.confirm(
                 style(
@@ -90,6 +88,8 @@ def chainlink_edit(name):
                 return
 
         else:
+            config_model.project_name = project
+            ProjectFileHandler.remove_chainlink_from_all_projects(name)
             ProjectFileHandler.add_chainlink_to_project(config_model.chainlink_name, project)
 
     not_done_with_next_links = click.confirm(
