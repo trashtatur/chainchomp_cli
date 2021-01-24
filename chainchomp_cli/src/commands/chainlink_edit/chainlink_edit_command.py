@@ -140,27 +140,21 @@ def chainlink_edit(name):
     if stop:
         config_model.stop = stop
 
-    adapter = click.prompt(
-        style('If you want to change the adapter that is used please type that in now', fg=MessageColors.PROMPT)
+    adapter_change = click.confirm(
+        style('Do you want to set a new adapter?', fg=MessageColors.PROMPT),
+        default=False
     )
-    adapters = AdapterFolderHandler.provide_list_of_installed_adapters()
-    while adapter not in adapters and adapter is not None:
-        echo(style('That adapter is not registered. It must be one of: ', fg=MessageColors.PROMPT))
-        adapter_list = "\n".join(adapters)
-        echo(style(f'{adapter_list}'))
-        adapter = click.prompt(
-            style('Please provide the name of the adapter now:', fg=MessageColors.PROMPT)
+    if adapter_change:
+        adapter_list = AdapterFolderHandler.provide_list_of_installed_adapters()
+        counter = 1
+        output_string = ''
+        for adapter in adapter_list:
+            output_string += f'{counter}) {adapter} \n'
+        adapter_type = click.prompt(
+            style(f'Please choose one of the following by number \n {output_string}', fg=MessageColors.PROMPT),
+            default=1
         )
-
-    if adapter:
-        config_model.adapter = adapter
-
-    profile = click.prompt(
-        style('If you want to change the profile that is used please type that in now', fg=MessageColors.PROMPT)
-    )
-
-    if profile:
-        config_model.profile = profile
+        config_model.adapter = adapter_type
 
     echo(style('Attempting to write new information to chainfile...', fg=MessageColors.INFO))
     edit_chainfile(config_model, name)
