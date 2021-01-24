@@ -25,11 +25,12 @@ def create_environment_variable(name: str, value: str):
         return
 
     echo(style(f'Successfully created environment variable {name}', MessageColors.SUCCESS))
-    activate_now = click.prompt(
+    activate_now = click.confirm(
         style(
             'Do you want to activate it immediately? Else it gets activated on chainchomps next start',
             MessageColors.PROMPT
-        )
+        ),
+        default=True
     )
     if activate_now:
         os.environ[name] = value

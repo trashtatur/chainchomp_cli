@@ -9,7 +9,13 @@ class EnvironmentWriterHandler:
         if os.path.isfile(os.path.join(PathProvider.environment_variables_folder(), name)):
             return False
 
-        with open(os.path.join(PathProvider.environment_variables_folder(), name)) as new_environment_variable:
-            new_environment_variable.write(value)
+        with open(
+                os.path.join(
+                    PathProvider.environment_variables_folder(),
+                    f'{name}.env'
+                ),
+                'x'
+        ) as new_environment_variable:
+            new_environment_variable.write(f'{name}={value}')
             new_environment_variable.close()
             return True
