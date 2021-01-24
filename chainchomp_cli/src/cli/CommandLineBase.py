@@ -9,6 +9,9 @@ from chainchomp_cli.src.commands.chainlink_start import chainlink_start_command
 from chainchomp_cli.src.commands.chainlink_stop import chainlink_stop_command
 from chainchomp_cli.src.commands.setup import setup_command
 from chainchomp_cli.src.commands.chainchomp_create_env_var import chainchomp_create_env_var_command
+from chainchomp_cli.src.commands.chainchomp_project_list import chainchomp_project_list_command
+from chainchomp_cli.src.commands.chainchomp_list_env_vars import chainchomp_list_env_vars_command
+from chainchomp_cli.src.commands.chainlink_register import chainlink_register_command
 
 
 @click.group()
@@ -26,6 +29,9 @@ def add_sub_commands():
     chainchomp.add_command(chainlink_adapters_list_command.adapter_list)
     chainchomp.add_command(chainchomp_adapter_register_command.adapter_register)
     chainchomp.add_command(chainchomp_create_env_var_command.create_environment_variable)
+    chainchomp.add_command(chainchomp_list_env_vars_command.list_environment_variables)
+    chainchomp.add_command(chainchomp_project_list_command.project_list)
+    chainchomp.add_command(chainlink_register_command.chainlink_register)
 
 
 def main():

@@ -11,7 +11,7 @@ from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 @SetupHandler.is_setup
 @click.command('chainlink:register')
 @click.argument('chainlink_path', default=os.getcwd())
-def chainlink_start(chainlink_path):
+def chainlink_register(chainlink_path):
     """
     This command attempts to register a chainlink
 

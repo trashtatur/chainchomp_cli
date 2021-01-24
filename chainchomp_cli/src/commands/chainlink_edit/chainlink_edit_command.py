@@ -105,6 +105,10 @@ def chainlink_edit(name):
             style('Type in the address of the link')
         )
         next_links.append(f'{ip_addr}::{name}')
+        not_done_with_next_links = click.confirm(
+            style('Do you want to add more?:', fg=MessageColors.PROMPT),
+            default=False
+        )
 
     if next_links:
         config_model.next_link = next_links
@@ -122,6 +126,10 @@ def chainlink_edit(name):
             style('Type in the address of the link')
         )
         previous_links.append(f'{ip_addr}::{name}')
+        not_done_with_previous_links = click.confirm(
+            style('Do you want to add more?:', fg=MessageColors.PROMPT),
+            default=False
+        )
 
     if previous_links:
         config_model.previous_links = previous_links

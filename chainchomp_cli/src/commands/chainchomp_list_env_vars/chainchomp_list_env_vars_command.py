@@ -1,5 +1,3 @@
-import os
-
 import click
 from click import style, echo
 
@@ -9,7 +7,7 @@ from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 
 @SetupHandler.is_setup
-@click.command('chainchomp:environment:create')
+@click.command('chainchomp:environment:list')
 def list_environment_variables():
     """
     Lists all environment variables currently registered with chainchomp
