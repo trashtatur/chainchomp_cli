@@ -114,3 +114,7 @@ class ProjectFileHandler:
                 return True
             finally:
                 new_project_file.close()
+
+    @staticmethod
+    def project_exists(project_name: str) -> bool:
+        return os.path.isfile(os.path.join(PathProvider.projects_folder(), f'{project_name}.yml'))

@@ -1,12 +1,14 @@
 import os
 
 import click
+import yaml
 from chainchomplib.configlayer.model.ChainfileModel import ChainfileModel
+from chainchomplib.configlayer.resolver.ChainlinkResolver import ChainlinkResolver
 from chainchomplib.data import PathProvider
 from click import echo, style
 
 from chainchomp_cli.src.cli import MessageColors
-from chainchomp_cli.src.handlers.config_file.ConfigReadHandler import ConfigReadHandler
+from chainchomp_cli.src.handlers.adapter.AdapterFolderHandler import AdapterFolderHandler
 from chainchomp_cli.src.handlers.config_file.ChainfileWriterHandler import ChainfileWriterHandler
 from chainchomp_cli.src.handlers.projects.ProjectFileHandler import ProjectFileHandler
 from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
@@ -14,20 +16,19 @@ from chainchomp_cli.src.handlers.setup.SetupHandler import SetupHandler
 
 @SetupHandler.is_setup
 @click.command('chainlink:edit')
-@click.argument('path', default=os.getcwd())
-def chainlink_edit(path):
+@click.argument('name',)
+def chainlink_edit(name):
     """
-    This command allows you to edit a Chainfile at a given location.
-    Chainchomp will look for a file called "chainfile.yml" here.
-    If you provide the file directly, through a path, it will also work.
+    This command allows you to edit a chainlink.
+    Chainchomp will look for a chainlink that is registered under the given name.
     If it can't be found the command won't do anything.
 
     If the file is found Chainchomp will allow you to edit it through command prompts
-    :param path the path to the chainfile
+    :param name the name of the chainlink
     """
     echo(style('Attempting to read the provided path for the chainlink file', fg=MessageColors.INFO))
 
-    config_model = ConfigReadHandler.read_config_file(path)
+    config_model = ChainlinkResolver.resolve(name)
 
     if config_model is None:
         echo(style('Could not read the provided chainfile or could not find it in the provided path',
@@ -42,6 +43,12 @@ def chainlink_edit(path):
         )
     )
 
+    name = click.prompt(
+        style('If you want to rename the chainlink please type the name in now:', fg=MessageColors.PROMPT)
+    )
+    if name:
+        config_model.chainlink_name = name
+
     project = click.prompt(
         style(
             'If you want to reassign the chainlink to another project please type the name in now:',
@@ -52,7 +59,7 @@ def chainlink_edit(path):
     if project:
         config_model.project_name = project
         ProjectFileHandler.remove_chainlink_from_all_projects(config_model.chainlink_name)
-        if not os.path.isfile(os.path.join(PathProvider.projects_folder(), project)):
+        if not ProjectFileHandler.project_exists(project):
             new_project = click.confirm(
                 style(
                     'The project you chose does not exist yet. Should chainchomp create it?:',
@@ -76,34 +83,48 @@ def chainlink_edit(path):
             else:
                 echo(
                     style(
-                        f'Chainchomp will ignore all project settings now. '
-                        f'Please consider this and maybe rerun this command or another more suited command',
+                        'No suitable option chosen. The command will abort.',
                         fg=MessageColors.WARNING
                     )
                 )
+                return
 
         else:
             ProjectFileHandler.add_chainlink_to_project(config_model.chainlink_name, project)
 
-    name = click.prompt(
-        style('If you want to rename the chainlink please type the name in now:', fg=MessageColors.PROMPT)
+    not_done_with_next_links = click.confirm(
+        style('Do you want to set some next chainlinks?:', fg=MessageColors.PROMPT),
+        default=False
     )
-    if name:
-        config_model.chainlink_name = name
+    next_links = []
+    while not_done_with_next_links:
+        name = click.prompt(
+            style('Type in the name of the link')
+        )
+        ip_addr = click.prompt(
+            style('Type in the address of the link')
+        )
+        next_links.append(f'{ip_addr}::{name}')
 
-    next_link = click.prompt(
-        style('If you want to set a next chainlink please type it in now:', fg=MessageColors.PROMPT)
+    if next_links:
+        config_model.next_link = next_links
+
+    not_done_with_previous_links = click.confirm(
+        style('Do you want to set some previous chainlinks?:', fg=MessageColors.PROMPT),
+        default=False
     )
+    previous_links = []
+    while not_done_with_previous_links:
+        name = click.prompt(
+            style('Type in the name of the link')
+        )
+        ip_addr = click.prompt(
+            style('Type in the address of the link')
+        )
+        previous_links.append(f'{ip_addr}::{name}')
 
-    if next_link:
-        config_model.next_link = next_link
-
-    previous_link = click.prompt(
-        style('If you want to set a previous chainlink please type it in now:', fg=MessageColors.PROMPT)
-    )
-
-    if previous_link:
-        config_model.previous_link = previous_link
+    if previous_links:
+        config_model.previous_links = previous_links
 
     start = click.prompt(
         style('If you want to set a start script please type it in now:', fg=MessageColors.PROMPT)
@@ -122,6 +143,14 @@ def chainlink_edit(path):
     adapter = click.prompt(
         style('If you want to change the adapter that is used please type that in now', fg=MessageColors.PROMPT)
     )
+    adapters = AdapterFolderHandler.provide_list_of_installed_adapters()
+    while adapter not in adapters and adapter is not None:
+        echo(style('That adapter is not registered. It must be one of: ', fg=MessageColors.PROMPT))
+        adapter_list = "\n".join(adapters)
+        echo(style(f'{adapter_list}'))
+        adapter = click.prompt(
+            style('Please provide the name of the adapter now:', fg=MessageColors.PROMPT)
+        )
 
     if adapter:
         config_model.adapter = adapter
@@ -134,18 +163,17 @@ def chainlink_edit(path):
         config_model.profile = profile
 
     echo(style('Attempting to write new information to chainfile...', fg=MessageColors.INFO))
-    edit_chainfile(config_model, path)
+    edit_chainfile(config_model, name)
 
 
-def edit_chainfile(chainlink_config_model: ChainfileModel, path: str):
-    actual_path = path
-    if os.path.isfile(path):
-        actual_path = os.path.dirname(path)
+def edit_chainfile(chainlink_config_model: ChainfileModel, name: str):
+    registrar_file = open(os.path.join(PathProvider.chainlinks_folder(), f'{name}.yml'))
+    data = yaml.safe_load(registrar_file)
     echo(style('Now editing the chainfile...', fg=MessageColors.INFO))
-    file_created = ChainfileWriterHandler.write_chainfile(chainlink_config_model, actual_path, True)
+    file_created = ChainfileWriterHandler.write_chainfile(chainlink_config_model, data.get('path', ''), True)
     if file_created is None:
-        echo(style(f'Could not overwrite chainfile', fg=MessageColors.WARNING))
+        echo(style('Could not overwrite chainfile', fg=MessageColors.WARNING))
     if not file_created:
-        echo(style(f'Failed to write the chainfile to: {path}', fg=MessageColors.ERROR))
+        echo(style('Failed to write the chainfile', fg=MessageColors.ERROR))
     else:
-        echo(style(f'Successfully edited chainfile in: {actual_path}', fg=MessageColors.SUCCESS))
+        echo(style('Successfully edited chainfile', fg=MessageColors.SUCCESS))
