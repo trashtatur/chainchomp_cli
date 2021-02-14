@@ -40,7 +40,7 @@ def adapter_register(path: str):
                     'Please provide an absolute path to a start script for your adapter now',
                     MessageColors.PROMPT
                 ),
-                default=True
+                default=True,
             )
             if not os.path.isfile(start_script):
                 is_correct = click.confirm(
@@ -64,7 +64,8 @@ def adapter_register(path: str):
                 'A stop script has been found at the path you provided. '
                 'Do you want to set it as the stop script for the adapter?',
                 fg=MessageColors.PROMPT
-            )
+            ),
+            default=True,
         )
 
         if set_found_stop_script:

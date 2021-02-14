@@ -48,7 +48,7 @@ def chainlink_create(path: str, force: bool):
             project_name_index = click.prompt(output_string, default=0)
             if project_name_index == 0:
                 user_wants_new_project = True
-            if project_name_index != 0 and len(projects_list)-1 >= project_name_index:
+            if project_name_index != 0:
                 project_name = projects_list[project_name_index - 1]
         if not projects_list:
             project_name = click.prompt('Please type in the designated project name now')
@@ -98,11 +98,12 @@ def chainlink_create(path: str, force: bool):
         output_string = ''
         for adapter in adapter_list:
             output_string += f'{counter}) {adapter} \n'
+            counter += 1
         adapter_type = click.prompt(
             style(f'Please choose one of the following by number \n {output_string}', fg=MessageColors.PROMPT),
             default=1
         )
-        chainfile_model.adapter = adapter_type
+        chainfile_model.adapter = adapter_list[adapter_type-1]
 
     create_or_add_to_project(project_name, chainlink_name, user_wants_new_project)
     create_chainfile(chainfile_model, path, force)

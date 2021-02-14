@@ -17,7 +17,7 @@ class ProjectFileHandler:
             )
             return False
 
-        with open(os.path.join(projects_folder, project_name), 'w') as existing_project_file:
+        with open(os.path.join(projects_folder, f'{project_name}.yml'), 'w') as existing_project_file:
             try:
                 existing_data = yaml.safe_load(existing_project_file)
             except yaml.YAMLError as exception:
